@@ -31,8 +31,8 @@ class Dishdetail extends Component{
         const styledDate= monthNames[date.getMonth()]+ ' ' +date.getDate()+', '+ date.getFullYear();
         return (
           <div key={comment.id}>
-            <p>{comment.comment}</p>
-            <p>-- {comment.author}, {styledDate}</p>
+            <dd>{comment.comment}</dd>
+            <dd>-- {comment.author}, {styledDate}</dd>
           </div>
         );
       }
@@ -40,7 +40,9 @@ class Dishdetail extends Component{
     return(
       <div>
         <h3>Comments</h3>
-        <div>{comments}</div>
+        <dl className='list-unstyled'>
+          {comments}
+        </dl>
       </div>
     );
   } else {
