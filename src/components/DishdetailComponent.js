@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from 'reactstrap';
 
-class Dishdetail extends Component{
-
-  renderDish(dish){
+function renderDish(dish){
     if (dish != null){
       return(
         <Card>
@@ -18,7 +16,7 @@ class Dishdetail extends Component{
     }
   }
 
-  renderComments(dish){
+function  renderComments(dish){
     const monthNames=[
     "January", "February", "March",
     "April", "May", "June", "July",
@@ -48,21 +46,20 @@ class Dishdetail extends Component{
       }
   }
 
-  render(){
-    const dish = this.props.dish;
+const Dishdetail=  (props)=> {
+    const dish = props.dish;
     return(
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-5 m-1">
-            {this.renderDish(dish)}
+            {renderDish(dish)}
           </div>
           <div className="col-12 col-md-5 m-1">
-            {this.renderComments(dish)}
+            {renderComments(dish)}
           </div>
         </div>
       </div>
     );
   }
-}
 
 export default Dishdetail;
