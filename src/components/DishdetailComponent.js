@@ -16,15 +16,15 @@ function renderDish(dish){
     }
   }
 
-function  renderComments(dish){
+function  renderComments(comments){
     const monthNames=[
     "January", "February", "March",
     "April", "May", "June", "July",
     "August", "September", "October",
     "November", "December"
   ];
-    if (dish!=null){
-      const comments= dish.comments.map((comment)=>{
+    if (comments!=null){
+      const styledComments= comments.map((comment)=>{
         const date=new Date(comment.date);
         const styledDate= monthNames[date.getMonth()]+ ' ' +date.getDate()+', '+ date.getFullYear();
         return (
@@ -38,7 +38,7 @@ function  renderComments(dish){
     return(
       <div>
         <h3>Comments</h3>
-        <div>{comments}</div>
+        <div>{styledComments}</div>
       </div>
     );
   } else {
@@ -48,6 +48,7 @@ function  renderComments(dish){
 
 const Dishdetail=  (props)=> {
     const dish = props.dish;
+    const comments = props.comments;
     return(
       <div className="container">
         <div className="row">
@@ -55,7 +56,7 @@ const Dishdetail=  (props)=> {
             {renderDish(dish)}
           </div>
           <div className="col-12 col-md-5 m-1">
-            {renderComments(dish)}
+            {renderComments(comments)}
           </div>
         </div>
       </div>
