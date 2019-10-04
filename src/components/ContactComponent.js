@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem,
-            Button, Form, FormGroup, Label, Input, Col, Row, FormFeedback } from 'reactstrap';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Button, Label, Col, Row, } from 'reactstrap';
+import { Control, Form, Errors, actions } from 'react-redux-form';
 
 class Contact extends Component {
   constructor(props) {
       super(props);
-      this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   handleSubmit(values) {
-    console.log('Current State is: ' + JSON.stringify(values));
-    alert('Current State is: ' + JSON.stringify(values));
-    this.props.resetFeedbackForm();
+    //alert(JSON.stringify(this.props.resetFeedbackForm));
+    this.props.postFeedback(JSON.stringify(values));
+    this.props.resetFeedbackForm('feedback');
         // event.preventDefault();
     }
 

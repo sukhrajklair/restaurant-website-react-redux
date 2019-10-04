@@ -4,6 +4,7 @@ import {Modal, ModalHeader, ModalBody, Label, Row, Col} from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 import {baseUrl} from '../shared/baseUrl';
+import {FadeTransform, Fade, Stagger} from 'react-animation-components';
 
 function RenderDish(props){
   if (props.isLoading) {
@@ -26,15 +27,21 @@ function RenderDish(props){
   }
   else if (props.dish != null){
     return(
-      <Card>
-        <CardImg top width="100%" src={baseUrl+props.dish.image} alt={props.dish.name} />
-        <CardBody>
-          <CardTitle>{props.dish.name}</CardTitle>
-          <CardText>{props.dish.description}</CardText>
-        </CardBody>
-      </Card>);}
+      <FadeTransform in
+        transformProps={{
+          exitTransform: 'scale(0.5) translateY(-50%)'
+        }}>
+        <Card>
+          <CardImg top width="100%" src={baseUrl+props.dish.image} alt={props.dish.name} />
+          <CardBody>
+            <CardTitle>{props.dish.name}</CardTitle>
+            <CardText>{props.dish.description}</CardText>
+          </CardBody>
+        </Card>
+      </FadeTransform>
+    );}
   else{
-      return (<div></div>);
+    return (<div></div>);
   }
 }
 
@@ -50,17 +57,23 @@ function  RenderComments({comments}){
         const date=new Date(comment.date);
         const styledDate= monthNames[date.getMonth()]+ ' ' +date.getDate()+', '+ date.getFullYear();
         return (
-          <div key={comment.id}>
-            <dd>{comment.comment}</dd>
-            <dd>-- {comment.author}, {styledDate}</dd>
-          </div>
+          <Fade in>
+            <div key={comment.id}>
+              <dd>{comment.comment}</dd>
+              <dd>-- {comment.author}, {styledDate}</dd>
+            </div>
+          </Fade>
         );
       }
     );
     return(
       <div>
         <h3>Comments</h3>
-        <div>{styledComments}</div>
+        <div>
+          <Stagger in>
+            {styledComments}
+          </Stagger>
+        </div>
       </div>
     );
   } else {
