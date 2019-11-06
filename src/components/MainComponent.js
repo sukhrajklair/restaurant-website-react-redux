@@ -5,7 +5,8 @@ import Footer from './FooterComponent';
 import Menu from './MenuComponent';
 import ContactPage from './ContactComponent';
 import AboutUs from './AboutComponent';
-import Dishdetail from './DishdetailComponent'
+import Dishdetail from './DishdetailComponent';
+import Favorites from './FavoritesComponent';
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as appActions from '../redux/ActionCreators';
@@ -18,7 +19,7 @@ class Main extends React.Component{
     this.props.fetchComments();
     this.props.fetchPromos();
     this.props.fetchLeaders();
-    console.log(this.props);
+    this.props.fetchFavorites();
   }
 
   render(){
@@ -37,16 +38,32 @@ class Main extends React.Component{
         />
       );
     };
+
     const DishWithId = ({match}) => {
       return(
-          <Dishdetail
-            dish={this.props.dishes.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]}
-            isLoading={this.props.dishes.isLoading}
-            errMess={this.props.dishes.errMess}
-            comments={this.props.comments.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))}
-            promosErrMess={this.props.comments.errMess}
-            postComment={this.props.postComment}
-          />
+        this.props.auth.isAuthenticated
+        ?
+        <Dishdetail
+          dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.dishId)[0]}
+          isLoading={this.props.dishes.isLoading}
+          errMess={this.props.dishes.errMess}
+          comments={this.props.comments.comments.filter((comment) => comment.dish === match.params.dishId)}
+          commentsErrMess={this.props.comments.errMess}
+          postComment={this.props.postComment}
+          favorite={this.props.favorites.favorites.dishes.some((dish) => dish._id === match.params.dishId)}
+          postFavorite={this.props.postFavorite}
+        />
+        :
+        <Dishdetail
+          dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.dishId)[0]}
+          isLoading={this.props.dishes.isLoading}
+          errMess={this.props.dishes.errMess}
+          comments={this.props.comments.comments.filter((comment) => comment.dish === match.params.dishId)}
+          commentsErrMess={this.props.comments.errMess}
+          postComment={this.props.postComment}
+          favorite={false}
+          postFavorite={this.props.postFavorite}
+        />
       );
     };
 
@@ -69,17 +86,35 @@ class Main extends React.Component{
         />
      );
    }
+
+   const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+      this.props.auth.isAuthenticated
+        ? <Component {...props} />
+        : <Redirect to={{
+            pathname: '/home',
+            state: { from: props.location }
+          }} />
+      )}
+    />
+    );
+
     return (
       <div>
-        <Header />
+        <Header
+          auth={this.props.auth}
+          loginUser={this.props.loginUser}
+          logoutUser={this.props.logoutUser}
+        />
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
             <Switch>
               <Route path="/home" component={HomePage} />
               <Route path="/aboutus" component = {AboutUsPage} />
               <Route exact path="/menu" component={()=><Menu dishes={this.props.dishes} />} />
-              <Route path="/contactus" component = {Contact} />
               <Route path="/menu/:dishId" component = {DishWithId} />
+              <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
+              <Route path="/contactus" component = {Contact} />
               <Redirect to="/home" />
             </Switch>
           </CSSTransition>
@@ -95,7 +130,9 @@ const mapStateToProps = state=>{
     dishes: state.dishes,
     comments: state.comments,
     promotions: state.promotions,
-    leaders: state.leaders
+    leaders: state.leaders,
+    favorites: state.favorites,
+    auth: state.auth
   }
 }
 
